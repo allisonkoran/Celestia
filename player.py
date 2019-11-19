@@ -3,7 +3,7 @@ import deck as dk
 
 class Player():
     # Player Initialization
-    def __init__(hand = None, treasure = None, deck = None, handSize = None, spyglass = None):
+    def __init__(self, hand = None, treasure = None, deck = None, handSize = None, spyglass = None):
         self._hand = hand
         self._treasure = treasure
         self._deck = deck
@@ -11,50 +11,50 @@ class Player():
         self._spyglass = spyglass
 
     # Getters/Setters
-    def getHand(): return self._hand
-    def setHand(hand): self._hand = hand
+    def getHand(self): return self._hand
+    def setHand(self, hand): self._hand = hand
 
-    def getTreasure(): return self._treasure
-    def setTreasure(treasure): self._treasure = treasure
+    def getTreasure(self): return self._treasure
+    def setTreasure(self, treasure): self._treasure = treasure
 
-    def getDeck(): return self._deck
-    def setDeck(deck): self._deck = deck
+    def getDeck(self): return self._deck
+    def setDeck(self, deck): self._deck = deck
 
-    def getHandSize(): return self._handSize
-    def setHandSize(size): self._handSize = size
+    def getHandSize(self): return self._handSize
+    def setHandSize(self, size): self._handSize = size
 
-    def getSpyglass(): return self._spyglass
-    def setSpyglass(spyglass): self._spyglass = spyglass
+    def getSpyglass(self): return self._spyglass
+    def setSpyglass(self, spyglass): self._spyglass = spyglass
 
     # Player evaluation functions
-    def evaluation(eval = "multiplayer"):
+    def evaluation(self, eval = "multiplayer"):
         eval = eval.lower() # converts input to lowercase
         if eval is "multiplayer":
-            multiplayer_evaluation()
+            self.multiplayer_evaluation()
         elif eval is "single":
-            single_evaluation()
+            self.single_evaluation()
         elif eval is "spyglass":
-            spyglass_evaluation()
+            self.spyglass_evaluation()
         else:
             print(f"Evaluation Type {eval} not recognized")
 
-    def single_evaluation():
+    def single_evaluation(self):
         return
-    def multiplayer_evaluation():
+    def multiplayer_evaluation(self):
         return
-    def spyglass_evaluation():
+    def spyglass_evaluation(self):
         return
 
     # Player policy functions
-    def policy(policy = "standard"):
+    def policy(self, policy = "standard"):
         policy = policy.lower() # converts input to lowercase
         if policy is "standard":
-            standard_policy()
+            self.standard_policy()
         elif policy is "Risk":
-            risk_policy()
+            self.risk_policy()
         else:
             print(f"Policy Type {policy} not recognized")
-    def standard_policy():
+    def standard_policy(self):
         return
-    def risk_policy():
+    def risk_policy(self):
         return
