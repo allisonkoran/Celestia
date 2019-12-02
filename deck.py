@@ -1,11 +1,22 @@
 # Class definition/ important deck object functions
+import random
 class Deck():
     # initialize deck object
-    def __init__(self, label = None, stack = None, size = None, ratio = {}):
+    # Ratio passed in as a dictionary of Card : # of Card pairs
+    def __init__(self, ratio, label = None):
         self._label = label
-        self._stack = stack
-        self._size = size
+        self._stack = []
+
         self._ratio = ratio
+
+        # Generate deck
+        for card, num in ratio.items():
+            for i in range(num):
+                self._stack.append(card)
+
+        self._size = len(self._stack)
+    def __str__(self):
+        return ', '.join([str(elem) for elem in self._stack])
 
     # Setter/Getter Functions
     def getLabel(self): return self._label
@@ -22,7 +33,14 @@ class Deck():
 
     # Deck Class general functions
     def draw(self):
-        return
+        if self._size <= 0:
+            print("The deck is empty!")
+            return None
+
+        card = self._stack.pop()
+        self._ratio[card] = self._ratio.get(card) - 1 # Update ratio of remaining cards
+        self._size -= 1
+        return card
 
     def shuffle(self):
-        return
+        random.shuffle(self._stack)
