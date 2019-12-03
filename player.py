@@ -1,14 +1,18 @@
 import deck as dk
+import copy as cp
 #Class definition / important functions regarding the "player" object
 
 class Player():
     # Player Initialization
-    def __init__(self, hand = None, treasure = None, deck = None, handSize = None, spyglass = None):
-        self._hand = hand
+    def __init__(self, equipmentDeck, hand = None, treasure = None,  handSize = None, spyglass = None):
+        self._hand = []
         self._treasure = treasure
-        self._deck = deck
         self._handSize = handSize
         self._spyglass = spyglass
+        self._onBoat = False
+
+        # Keeps a dictionary of what the agent expects to exist in the equipment deck
+        self._expectedEquipment = cp.deepcopy(equipmentDeck.getRatio())
 
     # Getters/Setters
     def getHand(self): return self._hand
@@ -17,8 +21,8 @@ class Player():
     def getTreasure(self): return self._treasure
     def setTreasure(self, treasure): self._treasure = treasure
 
-    def getDeck(self): return self._deck
-    def setDeck(self, deck): self._deck = deck
+    def getExpectedDeck(self): return self._expectedEquipment
+    def setExpectedDeck(self, deck): self._expectedEquipment = deck
 
     def getHandSize(self): return self._handSize
     def setHandSize(self, size): self._handSize = size
@@ -26,7 +30,22 @@ class Player():
     def getSpyglass(self): return self._spyglass
     def setSpyglass(self, spyglass): self._spyglass = spyglass
 
+    # Checks if on boat
+    def isOnBoat(self): return self._onBoat
+    # Changes boat status
+    def changeBoat(self, bool): self._onBoat = bool
+
     # Player evaluation functions
+    def generateHand(self, deck):
+        # draw 8 cards
+        for i in range(8):
+            self._hand.append(deck.draw())
+        self._size = 8
+
+        # Update the known equipmentDeck ratios
+        for card in self._hand:
+            self._expectedEquipment[card] -= 1
+
     def evaluation(self, eval = "multiplayer"):
         eval = eval.lower() # converts input to lowercase
         if eval is "multiplayer":
