@@ -6,7 +6,10 @@ class Player():
     # Player Initialization
     def __init__(self, equipmentDeck, hand = None, treasure = None,  handSize = None, spyglass = None):
         self._hand = []
-        self._treasure = treasure
+        if treasure== None:
+            self._treasure = 0
+        else:
+            self._treasure = treasure
         self._handSize = handSize
         self._spyglass = spyglass
         self._onBoat = False
