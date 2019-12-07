@@ -1,3 +1,4 @@
+
 import game as gm
 
 
@@ -131,13 +132,24 @@ while not(playerWon):
         if Game.player2.isOnBoat():
             Game.player2.setCityLocation(Game.getBoatLocation())
         
+
         if (Game.player1.isOnBoat() or Game.player2.isOnBoat()) and not(shipSunk) :
            Game.setCaptain(False)
         else:
             shipSunk=True
+           
             
         loc= Game.getBoatLocation()
         futDice=Game.futureDice
+    
+    if Game.player1.getTreasure()>=50 or Game.player2.getTreasure()>=50:  
+         playerWon=True
+         
+decideWinner()   
+print(Game.player1.getTreasure())  
+print(Game.player2.getTreasure())  
+    
+
     
     if Game.player1.getTreasure()>=50 or Game.player2.getTreasure()>=50:  
          playerWon=True

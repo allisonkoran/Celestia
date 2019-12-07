@@ -4,7 +4,7 @@ import copy as cp
 
 class Player():
     # Player Initialization
-    def __init__(self, equipmentDeck, hand = None, treasure = None,  handSize = None, spyglass = None):
+    def __init__(self, equipmentDeck, hand = None, treasure = None,  handSize = None, spyglass = None,cityLocation=None):
         self._hand = []
         if treasure== None:
             self._treasure = 0
@@ -13,6 +13,7 @@ class Player():
         self._handSize = handSize
         self._spyglass = spyglass
         self._onBoat = False
+        self._cityLocation=cityLocation
 
         # Keeps a dictionary of what the agent expects to exist in the equipment deck
         self._expectedEquipment = cp.deepcopy(equipmentDeck.getRatio())
@@ -32,6 +33,9 @@ class Player():
 
     def getSpyglass(self): return self._spyglass
     def setSpyglass(self, spyglass): self._spyglass = spyglass
+    
+    def setCityLocation(self, newLocation): self.cityLocation=newLocation
+    def getCityLocation(self): return self.cityLocation
 
     # Checks if on boat
     def isOnBoat(self): return self._onBoat
