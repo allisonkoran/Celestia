@@ -151,11 +151,6 @@ print(Game.player2.getTreasure())
     
 
     
-    if Game.player1.getTreasure()>=50 or Game.player2.getTreasure()>=50:  
-         playerWon=True
-         
-decideWinner()   
-print(Game.player1.getTreasure())  
-print(Game.player2.getTreasure())  
+  
     
     
