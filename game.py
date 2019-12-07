@@ -32,11 +32,15 @@ class Game:
         self.setBoatLocation(0)
         
         #init players and hands
-        self.player1= ply.Player(self.deck);
-        self.player2= ply.Player(self.deck);
+        self.player1= ply.Player(self.deck)
+        self.player2= ply.Player(self.deck)
         self.player1.generateHand(self.deck)
         self.player2.generateHand(self.deck)
-  
+        self.player1.changeBoat(1)
+        self.player2.changeBoat(1)
+        self.player1.setCityLocation(self.boatLocation)
+        self.player2.setCityLocation(self.boatLocation)
+        
         #init treasure decks
         self.treasure=self.initTreasure()
         
@@ -51,7 +55,7 @@ class Game:
         #1&2=blank, 3=cloud, 4=lightning, 5=bird, 6=pirate
         dice=[]
         value=0
-        for i in range(23):
+        for i in range(35):
             value=rnd.randint(1,6)
             if value == 1 or value== 2:
                 dice.append("blank")
@@ -74,9 +78,11 @@ class Game:
         roll=[]
         if self.getBoatLocation()<3:
             for x in range(2):
+                #rpop=self.futureDice.pop(0)
+                #print(rpop)
                 roll.append(self.futureDice.pop(0))
             
-        elif 3< self.getBoatLocation() and self.getBoatLocation()<6:
+        elif 3<= self.getBoatLocation() and self.getBoatLocation()<6:
             for x in range(3):
                 roll.append(self.futureDice.pop(0))
         else:
@@ -86,15 +92,20 @@ class Game:
         return self.currDice   
     
     def newRound(self):
-        #reset position of boat to 0 
-        self.setBoatLocation(0)
+        #reset position of boat to 0 or lowest value city still with treasure deck 
+        for index, deck in enumerate(self.treasure):
+            if deck.getSize()>0:
+                self.setBoatLocation(index)
+                break
+        
+        #and player location back on boat and set player city location to boat location
+        self.player1.changeBoat(1)
+        self.player2.changeBoat(1)
+        self.player1.setCityLocation(self.boatLocation)
+        self.player2.setCityLocation(self.boatLocation)
         
         #new captain(false= not first round)
         self.setCaptain(False)
-        
-        #and player location back on boat
-        self.player1.changeBoat(1)
-        self.player2.changeBoat(1)
         
         #deal new card to each player
         self.player1._hand.append(self.deck.draw())
@@ -111,11 +122,13 @@ class Game:
         #call between rounds and at start of game
         #use random .5 to choose if start of game
         #otherwise alternate players
+       
         if gameStart==True:
+            print("setting captain randomly")
             self.captain=rnd.randint(1,2)
-        elif self.captain==1:
-            self.captian=2
-        else:
+        elif self.captain==1 and self.player2.isOnBoat():
+            self.captain=2
+        elif self.captain==2 and self.player1.isOnBoat():
             self.captain=1
         return 
     
@@ -176,6 +189,8 @@ class Game:
         #index by boatlocation
         #index treasure list shuffle deck at index draw card from deck
         index=self.getBoatLocation()
+        while self.treasure[index].getSize()<1:
+            index=index+1
         self.treasure[index].shuffle()
         card=self.treasure[index].draw()
         return card
@@ -192,10 +207,4 @@ class Game:
 
 
 
-    
 
-    
-    
-    
-
-    
