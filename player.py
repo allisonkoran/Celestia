@@ -11,7 +11,10 @@ class Player():
         else:
             self._treasure = treasure
         self._handSize = handSize
-        self._spyglass = spyglass
+        if spyglass ==None:
+            self._spyglass = 0
+        else:
+            self._spyglass =spyglass
         self._onBoat = False
         self._cityLocation=cityLocation
 
