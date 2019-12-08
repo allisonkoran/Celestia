@@ -60,6 +60,7 @@ class Player():
     def single_evaluation(self):
         return
     def multiplayer_evaluation(self):
+        
         return
     def spyglass_evaluation(self):
         return
