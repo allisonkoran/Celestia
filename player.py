@@ -93,7 +93,7 @@ class Player():
         else:
             print(f"Policy Type {policy} not recognized")
 
-    def standard_policy(self, game, weight = 10):
+    def standard_policy(self, game, discount = .5):
         # Calculate the value of Policy(Stay)
         currentTreasure = game.treasure[game.boatLocation]
 
@@ -102,13 +102,10 @@ class Player():
             print(f"Treasure deck at location {game.boatLocation} is empty!")
             return "stay"
 
-        leaveValue = 0
-        for key,value in currentTreasure._ratio.items():
-            leaveValue += (key * value)
 
-        leaveValue /= currentTreasure.getSize()
+        leaveValue = game.RelativeTreasureValues[game.boatLocation]
 
-        # Calculate the value of Policy(Go->Go->Stay)
+        # Calculate the value of Policy(Go->Stay)
         # Effectivly is calculating the value associated with staying on the
         # boat until the next non-captain turn (two player game)
 
@@ -134,6 +131,7 @@ class Player():
 
         # Calculate the value with staying on the boat (MDP)
         # Value(t + 1) = P(Survive | Current Island, Stay on Ship) * [Reward(Two islands away) + Value(t)(Survive)]
+
         stayValue = 0
         expectedValue = 0
 
@@ -143,27 +141,50 @@ class Player():
         else:
             nextBoat = game.boatLocation + 1
 
-        for key, value in game.treasure[nextBoat]._ratio.items():
-            expectedValue += (key * value)
-
-        expectedValue /= game.treasure[nextBoat].getSize()
+        expectedValue = sigmoid(game.RelativeTreasureValues[nextBoat])
 
         # Running 10 instance of policy iteration to calculate Value
-        discount = weight * sigmoid(stayValue)
 
-        for i in range(10):
-            # No need to sum, as "sinking" has a reward of 0 and will always be 0
-            stayValue = survivalProb * (expectedValue + (discount * stayValue))
+        for i in range(100):
+            stayValue = (survivalProb * (expectedValue + (discount * stayValue))) + ((1-survivalProb) * (0 + (discount * stayValue)))
 
-        print(survivalProb)
-        #tayValue = survivalProb * expectedValue
-        print(f">>> STAY-VALUE: {stayValue} | LEAVE-VALUE: {leaveValue}\n Expected Deck: {self._expectedEquipment}<<<")
+        #print(survivalProb)
+        #print(f">>> STAY-VALUE: {stayValue} | LEAVE-VALUE: {leaveValue}\n Expected Deck: {self._expectedEquipment}<<<")
 
         return "leave" if (leaveValue >= stayValue) else "stay"
 
-    def risk_policy(self, game, weight = 25):
-        standard_policy(game, weight)
+    def risk_policy(self, game, discount = .75):
+        self.standard_policy(game, discount)
         return
+
+    def single_policy(self, game, discount = .3):
+        # Policy for when the agent is the only player left on the boat
+        numDice = len(game.currDice)
+        leaveValue = game.RelativeTreasureValues[game.boatLocation]
+
+        if self.getHandSize() < numDice:
+            return "leave"
+
+        # Num of Bad Dice Roll (non blanks) =  all dice combos - bad dice combos
+        badDiceRolls = choose((numDice * 6), 2)  - choose((numDice * 2), 2)
+
+        # Num of Card combos
+        cardCombos = choose(self.getHandSize(), numDice)
+
+        survivalProb = cardCombos/badDiceRolls
+
+        # Calculate next island expected Value
+        if(game.boatLocation >= 6):
+            nextBoat = 7
+        else:
+            nextBoat = game.boatLocation + 1
+        expectedValue = game.RelativeTreasureValues[nextBoat]
+
+        stayValue = 0#expectedValue * survivalProb
+        for i in range(100):
+            stayValue = (survivalProb * (expectedValue + (discount * stayValue))) + ((1-survivalProb) * (0 + (discount * stayValue)))
+
+        return "leave" if (leaveValue >= stayValue) else "stay"
 
 
     # Helper function to calculate combinatorics
