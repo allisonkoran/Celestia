@@ -1,3 +1,4 @@
+
 import game as gm
 
 
@@ -47,8 +48,11 @@ def getCaptainHand():
 
 def agentSpyglassUsed():
     used=False
-    #check if human player will use spyglass
     #check if agent player will use spyglass
+    if Game.player2.isOnBoat() and not(Game.player1.isOnBoat())and Game.boatLocation>=3:
+        Game.player2.setSpyglass(Game.player2.getSpyglass()-1)
+        print("Agent used spyglass to advace the aircraft.\n")
+        used=True
     return used
 
 def humanSpyglassUsed():
@@ -57,6 +61,7 @@ def humanSpyglassUsed():
     print("Would you like to use a spyglass to advance the aircraft to the next city? Type 'yes' or 'no':")
     sg=input()
     if sg == "yes":
+        Game.player1.setSpyglass(Game.player1.getSpyglass()-1)
         used=True;
     return used
 
@@ -121,7 +126,8 @@ while not(playerWon):
         print("      -------------------------------------------           " )
         print("captain is: player %d" %(Game.captain))
         print("Aircraft is located at: city number %d"%(Game.getBoatLocation()))
-        print('Dice results:  {0}\n'.format(roll))
+        if(Game.player2.isOnBoat()):
+            print('Dice results:  {0}\n'.format(roll))
         print('for testing-> captain hand: {0}'.format(capHand))
         if(Game.captain==2 or not(Game.player2.isOnBoat())):
            printHumanPlayerInfo()
@@ -145,7 +151,8 @@ while not(playerWon):
             if humanChoice == "leave":
                 Game.player1.changeBoat(0)
                 print ("player chose to leave")
-
+        if not(Game.player2.isOnBoat()):
+            print('Dice results:  {0}\n'.format(roll))
         #if player gets off deal treasure
         if(not(Game.player1.isOnBoat())and Game.getBoatLocation()==Game.player1.getCityLocation()):
             playerLeaves(Game.player1)
@@ -202,14 +209,7 @@ while not(playerWon):
 
 decideWinner()
 print(Game.player1.getTreasure())
-print(Game.player2.getTreasure()) 
-     
-    
-    
-    
-    
-    
-    
+print(Game.player2.getTreasure())
   
     
     
