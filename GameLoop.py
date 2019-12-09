@@ -165,7 +165,8 @@ while not(playerWon):
             while index<9:
                 if Game.treasure[index].getSize()>0:
                     Game.setBoatLocation(index)
-                    break 
+                    break
+                index+=1
             #if at last island already set boat location to 9 to break loop
             if index==9:
                 Game.setBoatLocation(index)
