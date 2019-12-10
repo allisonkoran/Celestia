@@ -126,24 +126,38 @@ while not(playerWon):
         print("      -------------------------------------------           " )
         print("captain is: player %d" %(Game.captain))
         print("Aircraft is located at: city number %d"%(Game.getBoatLocation()))
+
         if(Game.player2.isOnBoat()):
             print('Dice results:  {0}\n'.format(roll))
         print('for testing-> captain hand: {0}'.format(capHand))
+
         if(Game.captain==2 or not(Game.player2.isOnBoat())):
            printHumanPlayerInfo()
 
         #players decide to stay or leave
-        '''
-        if ((Game.getCaptain()==1 and Game.player2.isOnBoat()) or(Game.getCaptain()==2 and not(Game.player1.isOnBoat())))and Game.getBoatLocation()>2 :
-                print("agent disembarked")
-                Game.player2.changeBoat(0)
-        '''
-        if ((Game.getCaptain()==1 and Game.player2.isOnBoat()) or(Game.getCaptain()==2 and not(Game.player1.isOnBoat()))):
+
+
+        if ((Game.getCaptain()==1 and Game.player2.isOnBoat())):
+            if Game.player2.getSpyglass() > 0:
+                if Game.player2.risk_policy(Game) is "leave":
+                    print(">>>> Agent disembarked")
+                    Game.player2.changeBoat(0)
+                else:
+                    print(">>>> Agent chose to stay")
+            else:
                 if Game.player2.standard_policy(Game) is "leave":
                     print(">>>> Agent disembarked")
                     Game.player2.changeBoat(0)
                 else:
                     print(">>>> Agent chose to stay")
+
+        elif (Game.getCaptain()==2 and not(Game.player1.isOnBoat())):
+            if Game.player2.single_policy(Game) is "leave":
+                print(">>>> Agent disembarked")
+                Game.player2.changeBoat(0)
+            else:
+                print(">>>> Agent chose to stay")
+
 
         elif (Game.getCaptain()==2 and Game.player1.isOnBoat()) or (Game.getCaptain()==1 and not(Game.player2.isOnBoat())):
             print("To remain on the aircraft type 'stay' to disembark at current city and redeem treasure type 'leave':" )
@@ -151,8 +165,10 @@ while not(playerWon):
             if humanChoice == "leave":
                 Game.player1.changeBoat(0)
                 print ("player chose to leave")
+
         if not(Game.player2.isOnBoat()):
             print('Dice results:  {0}\n'.format(roll))
+
         #if player gets off deal treasure
         if(not(Game.player1.isOnBoat())and Game.getBoatLocation()==Game.player1.getCityLocation()):
             playerLeaves(Game.player1)
@@ -183,7 +199,9 @@ while not(playerWon):
                 if Game.treasure[index].getSize()>0:
                     Game.setBoatLocation(index)
                     break
+
                 index+=1
+
             #if at last island already set boat location to 9 to break loop
             if index==9:
                 Game.setBoatLocation(index)
@@ -210,6 +228,4 @@ while not(playerWon):
 decideWinner()
 print(Game.player1.getTreasure())
 print(Game.player2.getTreasure())
-  
-    
-    
+
